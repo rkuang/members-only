@@ -5,7 +5,23 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
+    <header>
+      <ul>
+        <li>
+          <a href="/">Home</a>
+        </li>
+        <li>
+          <a href="/signup">Sign Up</a>
+        </li>
+        <li>
+          <a href="/login">Log in</a>
+        </li>
+      </ul>
+    </header>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
+    <% if (currentUser) { %>
+      <p>You are logged in as <%= currentUser %></p>
+    <% } %>
   </body>
 </html>

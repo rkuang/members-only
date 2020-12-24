@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <header>
+      <ul>
+        <li>
+          <a href="/">Home</a>
+        </li>
+        <li>
+          <a href="/signup">Sign Up</a>
+        </li>
+      </ul>
+    </header>
+    <h1>Sign Up</h1>
+    <form method="POST" action="">
+      <label for="username">Username</label>
+      <input name="username" placeholder="Username" type="text" value="<%= username ? username : '' %>">
+      <label for="password">Password</label>
+      <input name="password" placeholder="Password" type="password">
+      <label for="confirmPassword">Confirm Password</label>
+      <input name="confirmPassword" placeholder="Confirm Password" type="password">
+      <button type="submit">Sign Up</button>
+    </form>
+    <% if (errors) { %>
+      <ul>
+        <% errors.forEach((error) => { %>
+          <li><%= error.msg %></li>
+        <% }) %>
+      </ul>
+    <% } %>
+    </body>
+</html>
