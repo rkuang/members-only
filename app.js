@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var session = require('express-session');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcrypt');
@@ -10,9 +11,14 @@ var bcrypt = require('bcrypt');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+var resources = require('./resources');
+
 var app = express();
 
-var resources = require('./resources');
+// Setup user sessions and authentication
+app.use(session({ secret: process.env.SESSION_SECRET }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 var User = require('./models/user');
 passport.use(new LocalStrategy((username, password, done) => {
@@ -28,6 +34,16 @@ passport.use(new LocalStrategy((username, password, done) => {
     });
   });
 }));
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  User.findById(id, (err, user) => {
+    done(null, user);
+  });
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
