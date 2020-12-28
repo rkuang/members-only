@@ -16,6 +16,8 @@ router.get('/signup', (req, res, next)  => {
 });
 
 router.post('/signup', [
+  body('firstName', 'First Name cannt be empty.').trim().notEmpty().escape(),
+  body('lastName', 'Last Name cannt be empty.').trim().notEmpty().escape(),
   body('username').trim().notEmpty().withMessage('Username cannot be empty.')
     .isEmail().withMessage('Username must be in an email format.').escape(),
   body('password').notEmpty().withMessage('Password cannot be empty.')
@@ -41,8 +43,8 @@ router.post('/signup', [
         new User({
           username: req.body.username,
           password: hash,
-          f_name: 'test',
-          l_name: 'test',
+          f_name: req.body.firstName,
+          l_name: req.body.lastName,
         }).save((err) => {
           if (err) { return next(err); }
           res.redirect('/');

@@ -13,13 +13,14 @@
         <li>
           <a href="/signup">Sign Up</a>
         </li>
-        <li>
-          <a href="/login">Log in</a>
-        </li>
       </ul>
     </header>
     <h1>Sign Up</h1>
     <form method="POST" action="">
+      <label for="firstName">First Name</label>
+      <input name="firstName" placeholder="First Name" type="text">
+      <label for="lastName">Last Name</label>
+      <input name="lastName" placeholder="Last Name" type="text">
       <label for="username">Username</label>
       <input name="username" placeholder="Username" type="text" value="<%= locals.username ? username : '' %>">
       <label for="password">Password</label>

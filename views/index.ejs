@@ -14,9 +14,6 @@
           <a href="/signup">Sign Up</a>
         </li>
         <li>
-          <a href="/login">Log in</a>
-        </li>
-        <li>
           <a href="/logout">Log out</a>
         </li>
       </ul>
@@ -24,7 +21,7 @@
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
     <% if (currentUser) { %>
-      <p>You are logged in as <%= currentUser %></p>
+      <p>You are logged in as <%= currentUser.username %></p>
     <% } else { %>
       <h1>Log In</h1>
       <form method="POST" action="/login">

@@ -7,6 +7,10 @@ const UserSchema = new Schema({
   f_name: { type: String, required: true },
   l_name: { type: String, required: true },
   membership_status: { type: Boolean, required: true, default: false }
+});
+
+UserSchema.virtual('fullName').get(function() {
+  return this.f_name + " " + this.l_name;
 })
 
 module.exports = mongoose.model('User', UserSchema);
