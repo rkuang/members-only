@@ -16,12 +16,24 @@
         <li>
           <a href="/login">Log in</a>
         </li>
+        <li>
+          <a href="/logout">Log out</a>
+        </li>
       </ul>
     </header>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
     <% if (currentUser) { %>
       <p>You are logged in as <%= currentUser %></p>
+    <% } else { %>
+      <h1>Log In</h1>
+      <form method="POST" action="/login">
+        <label for="username">Username</label>
+        <input name="username" placeholder="Username" type="text">
+        <label for="password">Password</label>
+        <input name="password" placeholder="Password" type="password">
+        <button type="submit">Log In</button>
+      </form>
     <% } %>
   </body>
 </html>

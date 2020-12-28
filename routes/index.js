@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 
 const { body, validationResult } = require('express-validator');
+const passport = require('passport');
+const bcrypt = require('bcrypt');
 const User = require('../models/user');
 
 /* GET home page. */
@@ -34,17 +36,30 @@ router.post('/signup', [
         errors: errors.array()
       })
     } else {
-      new User({
-        username: req.body.username,
-        password: req.body.password,
-        f_name: 'test',
-        l_name: 'test',
-      }).save((err) => {
-        if (err) { return next(err); }
-        res.redirect('/');
-      })
+      bcrypt.hash(req.body.password, 10, (err, hash) => {
+        if (err) return next(err);
+        new User({
+          username: req.body.username,
+          password: hash,
+          f_name: 'test',
+          l_name: 'test',
+        }).save((err) => {
+          if (err) { return next(err); }
+          res.redirect('/');
+        });
+      });
     }
   }
 ]);
+
+router.post('/login', passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/',
+}));
+
+router.get('/logout', (req, res) => {
+  req.logout();
+  res.redirect('/');
+});
 
 module.exports = router;
