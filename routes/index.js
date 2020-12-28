@@ -5,10 +5,21 @@ const { body, validationResult } = require('express-validator');
 const passport = require('passport');
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
+const resources = require('../resources');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', {
+    title: 'Members Only',
+    messages: [{
+      title: 'Test message',
+      text: 'this is a test',
+      timestamp: Date.now(),
+      user: {
+        username: 'testuser'
+      }
+    }]
+  });
 });
 
 router.get('/signup', (req, res, next)  => {
@@ -63,5 +74,35 @@ router.get('/logout', (req, res) => {
   req.logout();
   res.redirect('/');
 });
+
+router.get('/join-the-club', (req, res, next) => {
+  if (!req.user) {
+    res.redirect('/');
+  }
+  res.render('join-the-club', {
+    title: 'Join the club'
+  });
+})
+
+router.post('/join-the-club', (req, res, next) => {
+  bcrypt.compare(req.body.secretCode, resources.CLUB_PASSWORD_HASH, (err, same) => {
+    if (err) return next(err);
+    if (same) {
+      const update = new User({
+        membership_status: true,
+        _id: req.user._id,
+      });
+      User.findByIdAndUpdate(req.user._id, update, (err, user) => {
+        if (err) return next(err);
+        res.redirect('/')
+      })
+    } else {
+      res.render('join-the-club', {
+        title: 'Join the club',
+        failed: true
+      });
+    }
+  })
+})
 
 module.exports = router;

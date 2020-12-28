@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <header>
+      <ul>
+        <li>
+          <a href="/">Home</a>
+        </li>
+        <li>
+          <a href="/signup">Sign Up</a>
+        </li>
+        <li>
+          <a href="/logout">Log out</a>
+        </li>
+      </ul>
+    </header>
+    <% if (currentUser) { %>
+      <p>You are logged in as <%= currentUser.username %></p>
+      <p>Membership Status: <%= currentUser.membership_status %></p>
+      <% if (!currentUser.membership_status) { %>
+        <form method="POST" action="">
+          <label for="secretCode">Enter the secret code</label>
+          <input name="secretCode" placeholder="Secret Code" type="password"/>
+          <button type="submit">Enter</button>
+        </form>
+        <% if (locals.failed && failed) { %>
+          <p>Secret code was incorrect try again</p>
+        <% } %>
+      <% } else { %>
+        <p>You are already a part of the club</p>
+      <% } %>
+    <% } else { %>
+      <p>You aren't supposed to see this. ever</p>
+    <% } %>
+  </body>
+</html>

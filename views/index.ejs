@@ -16,12 +16,16 @@
         <li>
           <a href="/logout">Log out</a>
         </li>
+        <li>
+          <a href="/join-the-club">Join the club</a>
+        </li>
       </ul>
     </header>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
     <% if (currentUser) { %>
       <p>You are logged in as <%= currentUser.username %></p>
+      <p>Membership Status: <%= currentUser.membership_status %></p>
     <% } else { %>
       <h1>Log In</h1>
       <form method="POST" action="/login">
@@ -32,5 +36,19 @@
         <button type="submit">Log In</button>
       </form>
     <% } %>
+    <ul>
+      <% messages.forEach((message) => { %>
+        <li>
+          <p><%= message.title %></p>
+          <p><%= message.text %></p>
+          <p><%= message.timestamp %></p>
+          <% if (currentUser && currentUser.membership_status) { %>
+            <p><%= message.user.username %></p>
+          <% } else { %>
+            <p>???</p>
+          <% } %>
+        </li>
+      <% }); %>
+    </ul>
   </body>
 </html>
