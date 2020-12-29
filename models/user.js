@@ -6,7 +6,8 @@ const UserSchema = new Schema({
   password: { type: String, required: true },
   f_name: { type: String, required: true },
   l_name: { type: String, required: true },
-  membership_status: { type: Boolean, required: true, default: false }
+  membership_status: { type: Boolean, required: true, default: false },
+  admin: { type: Boolean, default: false }
 });
 
 UserSchema.virtual('fullName').get(function() {

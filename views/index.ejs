@@ -26,6 +26,20 @@
     <% if (currentUser) { %>
       <p>You are logged in as <%= currentUser.username %></p>
       <p>Membership Status: <%= currentUser.membership_status %></p>
+      <form method="POST" action="/messages">
+        <label for="title">Title</label>
+        <input name="title" placeholder="Title" type="text">
+        <label for="text">Text</label>
+        <input name="text" placeholder="Text" type="text">
+        <button type="submit">Post message</button>
+      </form>
+      <% if (locals.message_form_errors) { %>
+        <ul>
+          <% message_form_errors.forEach((error) => { %>
+            <li><%= error.msg %></li>
+          <% }); %>
+        </ul>
+      <% } %>
     <% } else { %>
       <h1>Log In</h1>
       <form method="POST" action="/login">
@@ -41,11 +55,17 @@
         <li>
           <p><%= message.title %></p>
           <p><%= message.text %></p>
-          <p><%= message.timestamp %></p>
           <% if (currentUser && currentUser.membership_status) { %>
+            <p><%= message.timestamp %></p>
             <p><%= message.user.username %></p>
           <% } else { %>
             <p>???</p>
+            <p>???</p>
+          <% } %>
+          <% if (currentUser && currentUser.admin) { %>
+            <form method="POST" action="/messages/<%= message._id %>/delete">
+              <button type="submit">Delete</button>
+            </form>
           <% } %>
         </li>
       <% }); %>

@@ -5,20 +5,17 @@ const { body, validationResult } = require('express-validator');
 const passport = require('passport');
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
+const Message = require('../models/message');
 const resources = require('../resources');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', {
-    title: 'Members Only',
-    messages: [{
-      title: 'Test message',
-      text: 'this is a test',
-      timestamp: Date.now(),
-      user: {
-        username: 'testuser'
-      }
-    }]
+  Message.find().populate('user').exec((err, messages) => {
+    if (err) return next(err);
+    res.render('index', {
+      title: 'Members Only',
+      messages: messages
+    })
   });
 });
 
@@ -85,6 +82,9 @@ router.get('/join-the-club', (req, res, next) => {
 })
 
 router.post('/join-the-club', (req, res, next) => {
+  if (!req.user) {
+    res.redirect('/');
+  }
   bcrypt.compare(req.body.secretCode, resources.CLUB_PASSWORD_HASH, (err, same) => {
     if (err) return next(err);
     if (same) {
@@ -103,6 +103,52 @@ router.post('/join-the-club', (req, res, next) => {
       });
     }
   })
+})
+
+router.post('/messages', [
+  (req, res, next) => {
+    if (!req.user) {
+      res.redirect('/');
+    }
+    next();
+  },
+  body('title', 'Title cannot be empty.').trim().notEmpty().escape(),
+  body('text', 'Text cannot be empty').trim().notEmpty().escape(),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    const message = new Message({
+      title: req.body.title,
+      text: req.body.text,
+      user: req.user._id
+    })
+    if (!errors.isEmpty()) {
+      Message.find().populate('user').exec((err, messages) => {
+        if (err) return next(err);
+        res.render('index', {
+          title: 'Members Only',
+          messages: messages,
+          message_form_errors: errors.array()
+        })
+      });
+    } else {
+      message.save((err, message) => {
+        res.redirect('/');
+      })
+    }
+  }
+])
+
+router.post('/messages/:id/delete', (req, res, next) => {
+  if (req.user && req.user.admin) {
+    Message.findByIdAndDelete(req.params.id, (err) => {
+      if (err) return next(err);
+      res.redirect('/');
+    })
+  } else {
+    const error = new Error('Only admins can delete messages');
+    error.status = 403;
+    next(error);
+  }
 })
 
 module.exports = router;
